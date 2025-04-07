@@ -1,42 +1,47 @@
-import express from 'express'
+import express from 'express';
 const app = express();
-app(express.json());
 
-app.get("/",(req,res)=>{
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+app.get("/", (req, res) => {
     try {
-        return res.status(200).send({message:"pong"})
+        return res.status(200).send({ message: "pong" });
     } catch (error) {
-        return res.status(500).send({message:"Something went wrong"})
+        return res.status(500).send({ message: "Something went wrong" });
     }
-})
+});
 
-app.post("/signup",(req,res)=>{
+app.post("/signup", (req, res) => {
     try {
-        const{Username,Email,Password,Dateofbirth}=req.body; 
-        if(!Username){
-            return res.send("Username cannot be empty")
-        }if(!Email){
-            return res.send("Email cannot be empty")
+        const { Username, Email, Password, Dateofbirth } = req.body;
+
+        // Validation checks
+        if (!Username) {
+            return res.status(400).send({ message: "Username cannot be empty" });
         }
-        if(CharacterData.Password<8 || CharacterData.Password>16){
-           return res.send("The password length should be greater than 8 or less than or equal to 16")
+        if (!Email) {
+            return res.status(400).send({ message: "Email cannot be empty" });
         }
-        const User = {
+        if (Password.length < 8 || Password.length > 16) {
+            return res.status(400).send({ message: "The password length should be greater than or equal to 8 and less than or equal to 16" });
+        }
+
+        // Mock user creation (replace with actual database logic)
+        const newUser = {
             Username,
             Email,
             Password,
             Dateofbirth
-        }
-        const newUser = User.save()
-        return res.send(newUser)
+        };
+
+        // Simulate saving user (normally you'd use a database)
+        return res.status(201).send({ message: "User created successfully", user: newUser });
     } catch (error) {
-        return res.status(500).send({message:"Sonmething went wrong"})
+        return res.status(500).send({ message: "Something went wrong" });
     }
-})
+});
 
-
-app.listen(8080,()=>{
+app.listen(8080, () => {
     console.log("The server connected successfully");
-})
-
-export default app.json();
+});
